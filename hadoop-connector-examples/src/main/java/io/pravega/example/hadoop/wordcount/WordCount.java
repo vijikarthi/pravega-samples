@@ -135,7 +135,7 @@ public class WordCount {
         if (otherArgs.length >= 7) {
             endPos = otherArgs[6];
         } else {
-            endPos = PravegaInputFormat.fetchLatestPositionsJson(uri, scope, stream);
+            endPos = PravegaInputFormat.fetchLatestPosition(uri, scope, stream);
         }
         conf.setStrings("pravega.endpositions", endPos);
 
