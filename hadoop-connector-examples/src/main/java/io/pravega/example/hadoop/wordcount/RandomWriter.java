@@ -173,7 +173,7 @@ public class RandomWriter extends Configured implements Tool {
     }
 
     static class RandomMapper extends Mapper<WritableComparable, Writable,
-                BytesWritable, BytesWritable> {
+            BytesWritable, BytesWritable> {
 
         private long numBytesToWrite;
         private int minKeySize;

@@ -270,9 +270,9 @@ public class StreamCutsExample implements Closeable {
             // Write events specifying the day they belong to and the value in their content.
             for (lastDayEventIndex = 0; lastDayEventIndex < eventsPerDay; lastDayEventIndex++) {
                 writerAndStreamName.getKey().writeEvent(sb.append(streamBaseId)
-                                                          .append(daySuffix)
-                                                          .append(eventSeparator)
-                                                          .append(random.nextInt(20)).toString()).join();
+                        .append(daySuffix)
+                        .append(eventSeparator)
+                        .append(random.nextInt(20)).toString()).join();
                 sb.setLength(0);
             }
 
