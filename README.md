@@ -2,7 +2,7 @@
 
 This repository contains code samples to demonstrate how developers can work with 
 [Pravega](http://pravega.io). We also provide code samples to connect analytics 
-engines such as [Flink](https://flink.apache.org/) and (some changes here)
+engines such as [Flink](https://flink.apache.org/) and (some more changes here)
 [Hadoop](http://hadoop.apache.org/) with Pravega as a storage substrate for data 
 streams. 
 
