@@ -23,11 +23,13 @@ import io.pravega.connectors.flink.serialization.PravegaSerialization;
 import io.pravega.example.flink.Utils;
 import io.pravega.example.flink.streamcuts.Constants;
 import io.pravega.example.flink.streamcuts.SensorStreamSlice;
+import io.pravega.example.flink.streamcuts.serialization.GuavaImmutableMapSerializer;
 import io.pravega.example.flink.streamcuts.serialization.Tuple2DeserializationSchema;
 import java.io.IOException;
 import java.net.URI;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
+
 import org.apache.flink.api.common.state.ValueState;
 import org.apache.flink.api.common.state.ValueStateDescriptor;
 import org.apache.flink.api.common.typeinfo.TypeHint;
@@ -77,6 +79,7 @@ public class StreamBookmarker {
                 .withPravegaConfig(pravegaConfig)
                 .forStream(sensorEvents)
                 .withReaderGroupName(READER_GROUP_NAME)
+                .withMaxOutstandingCheckpointRequest(10)
                 .withDeserializationSchema(new Tuple2DeserializationSchema())
                 .build();
 
@@ -93,6 +96,8 @@ public class StreamBookmarker {
         final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment()
                                                                          .enableCheckpointing(CHECKPOINT_INTERVAL);
         env.getCheckpointConfig().setCheckpointTimeout(CHECKPOINT_INTERVAL);
+
+        GuavaImmutableMapSerializer.registerSerializers(env.getConfig());
 
         // Bookmark those sections of the stream with values < 0 and write the output (StreamCuts).
         DataStreamSink<SensorStreamSlice> dataStreamSink = env.addSource(reader)
@@ -146,6 +151,7 @@ class Bookmarker extends KeyedProcessFunction<Long, Tuple2<Integer, Double>, Sen
      */
     @Override
     public void processElement(Tuple2<Integer, Double> value, Context ctx, Collector<SensorStreamSlice> out) throws IOException {
+
         if (value.f1 < 0 && pendingBookmark.value() == null) {
             // Instantiate a SensorStreamSlice object for this sensor.
             SensorStreamSlice sensorStreamSlice = new SensorStreamSlice(value.f0);
